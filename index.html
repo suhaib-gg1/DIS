@@ -1,39 +1,207 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-    <!-- إعدادات الصفحة والستايل -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>فهرس المهام</title>
     <style>
-        /* كل تنسيقات CSS هنا */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f4f4f4;
+            direction: rtl;
+        }
+        header {
+            background-color: #007b7b;
+            color: white;
+            padding: 20px;
+            width: 100%;
+            text-align: center;
+            font-size: 24px;
+            animation: fadeIn 1s ease-in-out;
+        }
+        .container {
+            margin: 20px;
+            width: 90%;
+            max-width: 600px;
+            background: white;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            animation: slideIn 1s ease-in-out;
+        }
+        .task-list {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .task-card {
+            background: #ffffff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            opacity: 0;
+            animation: fadeIn 0.5s ease-in-out forwards;
+        }
+        .task-card span {
+            font-weight: bold;
+            color: #007b7b;
+        }
+        button {
+            background-color: #ff4c4c;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #e43b3b;
+        }
+        .add-task {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .add-task input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            transition: border-color 0.3s ease;
+        }
+        .add-task input:focus {
+            border-color: #007b7b;
+        }
+        .add-task button {
+            background-color: #007b7b;
+            transition: background-color 0.3s ease;
+        }
+        .add-task button:hover {
+            background-color: #005f5f;
+        }
+        .translate-button {
+            margin-bottom: 20px;
+            background-color: #007b7b;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .translate-button:hover {
+            background-color: #005f5f;
+            transform: scale(1.05);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
     </style>
 </head>
 <body>
-    <!-- واجهة المستخدم -->
     <header>فهرس المهام</header>
     <div class="container">
-        <button class="translate-button">ترجمة</button>
-        
-        <!-- معايير الفهرسة -->
-        <div class="criteria-section">
-            <h3>معايير الفهرسة</h3>
-            <div class="criteria-item">
-                <input type="radio" id="arabicSort" name="sortCriteria" checked>
-                <label for="arabicSort">الترتيب الأبجدي العربي</label>
-            </div>
-        </div>
-
-        <!-- حقل إضافة المهام -->
+        <button class="translate-button" onclick="toggleTranslation()">ترجمة</button>
         <div class="add-task">
             <input type="text" id="taskInput" placeholder="أدخل مهمة جديدة...">
             <button onclick="addTask()">إضافة مهمة</button>
         </div>
-
-        <!-- قائمة المهام -->
         <ul id="taskList" class="task-list"></ul>
     </div>
 
-    <!-- السكريبتات -->
     <script>
-        // كل الدوال الجاهزة هنا (إضافة/حذف/ترتيب المهام + الترجمة)
+        let isTranslated = false;
+
+        function addTask() {
+            const taskInput = document.getElementById('taskInput');
+            const taskList = document.getElementById('taskList');
+            const taskValue = taskInput.value.trim();
+
+            if (taskValue === '') {
+                alert(isTranslated ? 'Please enter a task.' : 'من فضلك أدخل مهمة.');
+                return;
+            }
+
+            const taskCard = document.createElement('div');
+            taskCard.className = 'task-card';
+
+            const firstLetter = document.createElement('span');
+            const taskText = document.createTextNode(taskValue);
+            const deleteButton = document.createElement('button');
+
+            firstLetter.textContent = taskValue[0].toUpperCase() + ': ';
+            deleteButton.textContent = isTranslated ? 'Delete' : 'حذف';
+            deleteButton.onclick = () => taskCard.remove();
+
+            taskCard.appendChild(firstLetter);
+            taskCard.appendChild(taskText);
+            taskCard.appendChild(deleteButton);
+
+            const tasks = Array.from(taskList.children);
+            tasks.push(taskCard);
+
+            tasks.sort((a, b) => a.textContent.localeCompare(b.textContent));
+
+            taskList.innerHTML = '';
+            tasks.forEach((task, index) => {
+                task.style.animationDelay = `${index * 0.1}s`;
+                taskList.appendChild(task);
+            });
+
+            taskInput.value = '';
+        }
+
+        function toggleTranslation() {
+            const elements = document.querySelectorAll('header, .add-task input, .add-task button, .translate-button');
+            const translations = {
+                'فهرس المهام': 'Task Index',
+                'Task Index': 'فهرس المهام',
+                'أدخل مهمة جديدة...': 'Enter a new task...',
+                'Enter a new task...': 'أدخل مهمة جديدة...',
+                'إضافة مهمة': 'Add Task',
+                'Add Task': 'إضافة مهمة',
+                'ترجمة': 'Translate',
+                'Translate': 'ترجمة'
+            };
+
+            elements.forEach(el => {
+                if (el.placeholder && translations[el.placeholder]) {
+                    el.placeholder = translations[el.placeholder];
+                } else if (el.textContent && translations[el.textContent]) {
+                    el.textContent = translations[el.textContent];
+                }
+            });
+
+            isTranslated = !isTranslated;
+        }
     </script>
 </body>
 </html>

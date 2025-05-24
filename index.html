@@ -106,6 +106,26 @@
         .criteria-item input {
             margin-left: 10px;
         }
+        .category-filter {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--container-border);
+        }
+        .category-filter h4 {
+            margin-bottom: 10px;
+            color: var(--highlight-color);
+        }
+        .category-options {
+            display: flex;
+            gap: 10px;
+        }
+        .category-option {
+            display: flex;
+            align-items: center;
+        }
+        .category-option input {
+            margin-left: 5px;
+        }
         .add-task {
             display: flex;
             flex-wrap: wrap;
@@ -324,6 +344,29 @@
                 <input type="radio" id="dueDateSort" name="sortCriteria">
                 <label for="dueDateSort">حسب تاريخ الإنجاز</label>
             </div>
+            
+            <!-- قسم تصفية التصنيف الجديد -->
+            <div class="category-filter">
+                <h4>تصفية حسب التصنيف</h4>
+                <div class="category-options">
+                    <div class="category-option">
+                        <input type="radio" id="allCategories" name="categoryFilter" value="all" checked>
+                        <label for="allCategories">الكل</label>
+                    </div>
+                    <div class="category-option">
+                        <input type="radio" id="workFilter" name="categoryFilter" value="work">
+                        <label for="workFilter">عمل</label>
+                    </div>
+                    <div class="category-option">
+                        <input type="radio" id="studyFilter" name="categoryFilter" value="study">
+                        <label for="studyFilter">دراسة</label>
+                    </div>
+                    <div class="category-option">
+                        <input type="radio" id="personalFilter" name="categoryFilter" value="personal">
+                        <label for="personalFilter">شخصي</label>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="add-task">
@@ -353,7 +396,6 @@
         let isDarkMode = false;
         let editIndex = -1;
 
-        // تحميل المهام والمظهر المحفوظ عند بدء التشغيل
         function loadSettings() {
             const savedTasks = localStorage.getItem('tasks');
             if (savedTasks) {
@@ -371,13 +413,11 @@
             renderTasks();
         }
 
-        // استخراج الأرقام من النص
         function extractNumber(text) {
             const matches = text.match(/\d+/);
             return matches ? parseInt(matches[0]) : null;
         }
 
-        // دالة البحث عن المهام
         function searchTasks() {
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
             const taskItems = document.querySelectorAll('.task-card');
@@ -399,7 +439,6 @@
                 }
             });
             
-            // عرض رسالة إذا لم يتم العثور على مهام
             const noTasksMsg = document.querySelector('.no-tasks');
             const noResultsMsg = document.getElementById('no-results');
             
@@ -417,7 +456,6 @@
             }
         }
 
-        // عرض المهام
         function renderTasks() {
             const taskList = document.getElementById('taskList');
             taskList.innerHTML = '';
@@ -429,9 +467,16 @@
                 return;
             }
 
-            let sortedTasks = [...tasks];
+            let filteredTasks = [...tasks];
             
-            // تطبيق معايير الفهرسة
+            // تصفية حسب التصنيف المختار
+            const selectedCategory = document.querySelector('input[name="categoryFilter"]:checked').value;
+            if (selectedCategory !== 'all') {
+                filteredTasks = filteredTasks.filter(task => task.category === selectedCategory);
+            }
+            
+            let sortedTasks = [...filteredTasks];
+            
             if (document.getElementById('arabicSort').checked) {
                 sortedTasks.sort((a, b) => a.text.localeCompare(b.text, 'ar'));
             } 
@@ -523,8 +568,8 @@
             });
         }
 
-        // تنسيق التاريخ
         function formatDate(dateString) {
+            const date = new Date(dateString){
             const date = new Date(dateString);
             return date.toLocaleDateString('ar-EG', {
                 year: 'numeric',
@@ -535,7 +580,6 @@
             });
         }
 
-        // إضافة/تعديل مهمة
         function addTask() {
             const taskInput = document.getElementById('taskInput');
             const taskText = taskInput.value.trim();
@@ -548,7 +592,6 @@
             }
 
             if (editIndex === -1) {
-                // إضافة مهمة جديدة
                 tasks.push({
                     text: taskText,
                     category: taskCategory,
@@ -556,7 +599,6 @@
                     date: new Date()
                 });
             } else {
-                // تعديل المهمة الحالية
                 tasks[editIndex] = {
                     text: taskText,
                     category: taskCategory,
@@ -576,7 +618,6 @@
             document.querySelector('.no-tasks').style.display = 'none';
         }
 
-        // تعديل مهمة
         function editTask(index) {
             const task = tasks[index];
             document.getElementById('taskInput').value = task.text;
@@ -588,7 +629,6 @@
             document.getElementById('taskInput').focus();
         }
 
-        // حذف مهمة
         function deleteTask(index) {
             if (confirm(isTranslated ? 'Are you sure?' : 'هل أنت متأكد؟')) {
                 tasks.splice(index, 1);
@@ -600,12 +640,10 @@
             }
         }
 
-        // حفظ المهام في localStorage
         function saveTasks() {
             localStorage.setItem('tasks', JSON.stringify(tasks));
         }
 
-        // تبديل اللغة
         function toggleTranslation() {
             isTranslated = !isTranslated;
             
@@ -655,10 +693,15 @@
                 <option value="study">${isTranslated ? 'Study' : 'دراسة'}</option>
             `;
             
+            // تحديث خيارات التصفية حسب التصنيف
+            document.querySelector('label[for="allCategories"]').textContent = isTranslated ? 'All' : 'الكل';
+            document.querySelector('label[for="workFilter"]').textContent = isTranslated ? 'Work' : 'عمل';
+            document.querySelector('label[for="studyFilter"]').textContent = isTranslated ? 'Study' : 'دراسة';
+            document.querySelector('label[for="personalFilter"]').textContent = isTranslated ? 'Personal' : 'شخصي';
+            
             renderTasks();
         }
 
-        // تفعيل الوضع الداكن
         function enableDarkMode() {
             document.documentElement.setAttribute('data-theme', 'dark');
             document.getElementById('theme-toggle').innerHTML = isTranslated ? 
@@ -668,7 +711,6 @@
             localStorage.setItem('theme', 'dark');
         }
 
-        // تفعيل الوضع الفاتح
         function enableLightMode() {
             document.documentElement.removeAttribute('data-theme');
             document.getElementById('theme-toggle').innerHTML = isTranslated ? 
@@ -678,7 +720,6 @@
             localStorage.setItem('theme', 'light');
         }
 
-        // تبديل المظهر
         function toggleTheme() {
             if (isDarkMode) {
                 enableLightMode();
@@ -687,15 +728,16 @@
             }
         }
 
-        // إضافة مستمعين لأزرار الفهرسة
         document.querySelectorAll('input[name="sortCriteria"]').forEach(radio => {
             radio.addEventListener('change', renderTasks);
         });
 
-        // البحث أثناء الكتابة
+        document.querySelectorAll('input[name="categoryFilter"]').forEach(radio => {
+            radio.addEventListener('change', renderTasks);
+        });
+
         document.getElementById('searchInput').addEventListener('input', searchTasks);
 
-        // تحميل الإعدادات عند بدء الصفحة
         window.onload = loadSettings;
     </script>
 </body>

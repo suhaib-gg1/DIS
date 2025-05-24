@@ -1,72 +1,56 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>فهرس المهام</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Tahoma', Arial, sans-serif;
             margin: 0;
             padding: 0;
+            background-color: #f5f5f5;
             display: flex;
             flex-direction: column;
             align-items: center;
-            background-color: #f4f4f4;
-            direction: rtl;
+            min-height: 100vh;
         }
         header {
             background-color: #007b7b;
             color: white;
-            padding: 20px;
             width: 100%;
+            padding: 20px;
             text-align: center;
             font-size: 24px;
-            animation: fadeIn 1s ease-in-out;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
         .container {
-            margin: 20px;
             width: 90%;
             max-width: 600px;
+            margin: 20px;
             background: white;
             padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
-            animation: slideIn 1s ease-in-out;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
-        .task-list {
-            list-style: none;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .task-card {
-            background: #ffffff;
+        .criteria-section {
+            background-color: #f8f9fa;
             padding: 15px;
             border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            opacity: 0;
-            animation: fadeIn 0.5s ease-in-out forwards;
+            margin-bottom: 20px;
+            border: 1px solid #eee;
         }
-        .task-card span {
-            font-weight: bold;
+        .criteria-section h3 {
+            margin-top: 0;
             color: #007b7b;
         }
-        button {
-            background-color: #ff4c4c;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            cursor: pointer;
-            border-radius: 4px;
-            transition: background-color 0.3s ease;
+        .criteria-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
         }
-        button:hover {
-            background-color: #e43b3b;
+        .criteria-item input {
+            margin-left: 10px;
         }
         .add-task {
             display: flex;
@@ -78,51 +62,61 @@
             padding: 10px;
             border: 1px solid #ddd;
             border-radius: 4px;
-            transition: border-color 0.3s ease;
+            font-family: inherit;
         }
         .add-task input:focus {
+            outline: none;
             border-color: #007b7b;
         }
-        .add-task button {
+        button {
             background-color: #007b7b;
-            transition: background-color 0.3s ease;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: background-color 0.3s;
         }
-        .add-task button:hover {
+        button:hover {
             background-color: #005f5f;
         }
         .translate-button {
             margin-bottom: 20px;
-            background-color: #007b7b;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-            border-radius: 4px;
-            transition: background-color 0.3s ease, transform 0.3s ease;
+            width: 100%;
         }
-        .translate-button:hover {
-            background-color: #005f5f;
-            transform: scale(1.05);
+        .task-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
         }
-
+        .task-card {
+            background: white;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: fadeIn 0.3s ease-out;
+        }
+        .task-card span {
+            font-weight: bold;
+            color: #007b7b;
+            margin-left: 5px;
+        }
+        .delete-btn {
+            background-color: #ff4c4c;
+            padding: 5px 10px;
+            font-size: 14px;
+        }
+        .delete-btn:hover {
+            background-color: #e43b3b;
+        }
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
-
-        @keyframes slideIn {
-            from {
-                transform: translateY(20px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
@@ -130,78 +124,137 @@
     <header>فهرس المهام</header>
     <div class="container">
         <button class="translate-button" onclick="toggleTranslation()">ترجمة</button>
+        
+        <div class="criteria-section">
+            <h3>معايير الفهرسة</h3>
+            <div class="criteria-item">
+                <input type="radio" id="noSort" name="sortCriteria" checked>
+                <label for="noSort">بدون ترتيب</label>
+            </div>
+            <div class="criteria-item">
+                <input type="radio" id="arabicSort" name="sortCriteria">
+                <label for="arabicSort">الترتيب الأبجدي العربي</label>
+            </div>
+        </div>
+
         <div class="add-task">
             <input type="text" id="taskInput" placeholder="أدخل مهمة جديدة...">
             <button onclick="addTask()">إضافة مهمة</button>
         </div>
+
         <ul id="taskList" class="task-list"></ul>
     </div>
 
     <script>
+        let tasks = [];
         let isTranslated = false;
 
+        // تحميل المهام المحفوظة عند بدء التشغيل
+        function loadTasks() {
+            const savedTasks = localStorage.getItem('tasks');
+            if (savedTasks) {
+                tasks = JSON.parse(savedTasks);
+                renderTasks();
+            }
+        }
+
+        // عرض المهام
+        function renderTasks() {
+            const taskList = document.getElementById('taskList');
+            taskList.innerHTML = '';
+
+            let sortedTasks = [...tasks];
+            
+            // تطبيق معايير الفهرسة
+            if (document.getElementById('arabicSort').checked) {
+                sortedTasks.sort((a, b) => a.text.localeCompare(b.text, 'ar'));
+            }
+
+            sortedTasks.forEach((task, index) => {
+                const taskCard = document.createElement('li');
+                taskCard.className = 'task-card';
+                taskCard.innerHTML = `
+                    <div>
+                        <span>${task.text[0].toUpperCase()}:</span>
+                        ${task.text}
+                    </div>
+                    <button class="delete-btn" onclick="deleteTask(${index})">
+                        ${isTranslated ? 'Delete' : 'حذف'}
+                    </button>
+                `;
+                taskList.appendChild(taskCard);
+            });
+        }
+
+        // إضافة مهمة جديدة
         function addTask() {
             const taskInput = document.getElementById('taskInput');
-            const taskList = document.getElementById('taskList');
-            const taskValue = taskInput.value.trim();
+            const taskText = taskInput.value.trim();
 
-            if (taskValue === '') {
+            if (!taskText) {
                 alert(isTranslated ? 'Please enter a task.' : 'من فضلك أدخل مهمة.');
                 return;
             }
 
-            const taskCard = document.createElement('div');
-            taskCard.className = 'task-card';
-
-            const firstLetter = document.createElement('span');
-            const taskText = document.createTextNode(taskValue);
-            const deleteButton = document.createElement('button');
-
-            firstLetter.textContent = taskValue[0].toUpperCase() + ': ';
-            deleteButton.textContent = isTranslated ? 'Delete' : 'حذف';
-            deleteButton.onclick = () => taskCard.remove();
-
-            taskCard.appendChild(firstLetter);
-            taskCard.appendChild(taskText);
-            taskCard.appendChild(deleteButton);
-
-            const tasks = Array.from(taskList.children);
-            tasks.push(taskCard);
-
-            tasks.sort((a, b) => a.textContent.localeCompare(b.textContent));
-
-            taskList.innerHTML = '';
-            tasks.forEach((task, index) => {
-                task.style.animationDelay = `${index * 0.1}s`;
-                taskList.appendChild(task);
+            tasks.push({
+                text: taskText,
+                date: new Date()
             });
 
             taskInput.value = '';
+            saveTasks();
+            renderTasks();
         }
 
+        // حذف مهمة
+        function deleteTask(index) {
+            if (confirm(isTranslated ? 'Are you sure?' : 'هل أنت متأكد؟')) {
+                tasks.splice(index, 1);
+                saveTasks();
+                renderTasks();
+            }
+        }
+
+        // حفظ المهام في localStorage
+        function saveTasks() {
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+        }
+
+        // تبديل اللغة
         function toggleTranslation() {
-            const elements = document.querySelectorAll('header, .add-task input, .add-task button, .translate-button');
+            isTranslated = !isTranslated;
+            
             const translations = {
                 'فهرس المهام': 'Task Index',
-                'Task Index': 'فهرس المهام',
                 'أدخل مهمة جديدة...': 'Enter a new task...',
-                'Enter a new task...': 'أدخل مهمة جديدة...',
                 'إضافة مهمة': 'Add Task',
-                'Add Task': 'إضافة مهمة',
                 'ترجمة': 'Translate',
-                'Translate': 'ترجمة'
+                'معايير الفهرسة': 'Indexing Criteria',
+                'بدون ترتيب': 'No Sorting',
+                'الترتيب الأبجدي العربي': 'Arabic Alphabetical Order'
             };
 
-            elements.forEach(el => {
-                if (el.placeholder && translations[el.placeholder]) {
-                    el.placeholder = translations[el.placeholder];
-                } else if (el.textContent && translations[el.textContent]) {
-                    el.textContent = translations[el.textContent];
-                }
+            document.querySelector('header').textContent = isTranslated ? 'Task Index' : 'فهرس المهام';
+            document.getElementById('taskInput').placeholder = isTranslated ? 'Enter a new task...' : 'أدخل مهمة جديدة...';
+            document.querySelector('.add-task button').textContent = isTranslated ? 'Add Task' : 'إضافة مهمة';
+            document.querySelector('.translate-button').textContent = isTranslated ? 'Translate' : 'ترجمة';
+            document.querySelector('.criteria-section h3').textContent = isTranslated ? 'Indexing Criteria' : 'معايير الفهرسة';
+            document.querySelector('label[for="noSort"]').textContent = isTranslated ? 'No Sorting' : 'بدون ترتيب';
+            document.querySelector('label[for="arabicSort"]').textContent = isTranslated ? 'Arabic Alphabetical Order' : 'الترتيب الأبجدي العربي';
+            
+            // تحديث أزرار الحذف
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.textContent = isTranslated ? 'Delete' : 'حذف';
             });
-
-            isTranslated = !isTranslated;
         }
+
+        // إضافة مستمعين لأزرار الفهرسة
+        document.querySelectorAll('input[name="sortCriteria"]').forEach(radio => {
+            radio.addEventListener('change', renderTasks);
+        });
+
+        // تحميل المهام عند بدء الصفحة
+        window.onload = loadTasks;
     </script>
 </body>
 </html>

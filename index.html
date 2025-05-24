@@ -5,44 +5,98 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>فهرس المهام</title>
     <style>
+        :root {
+            --bg-color: #f5f5f5;
+            --text-color: #333333;
+            --header-bg: #007b7b;
+            --header-text: white;
+            --container-bg: white;
+            --container-border: #eee;
+            --criteria-bg: #f8f9fa;
+            --button-bg: #007b7b;
+            --button-hover: #005f5f;
+            --edit-btn: #ffc107;
+            --edit-hover: #e0a800;
+            --delete-btn: #ff4c4c;
+            --delete-hover: #e43b3b;
+            --input-border: #ddd;
+            --input-focus: #007b7b;
+            --task-card-bg: white;
+            --task-card-shadow: rgba(0, 0, 0, 0.1);
+            --highlight-color: #007b7b;
+            --work-color: #ff6b6b;
+            --personal-color: #48dbfb;
+            --study-color: #1dd1a1;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #1a1a1a;
+            --text-color: #ffffff;
+            --header-bg: #004d4d;
+            --header-text: #f0f0f0;
+            --container-bg: #2d2d2d;
+            --container-border: #444;
+            --criteria-bg: #3a3a3a;
+            --button-bg: #006666;
+            --button-hover: #004d4d;
+            --edit-btn: #ffaa00;
+            --edit-hover: #e69500;
+            --delete-btn: #cc3a3a;
+            --delete-hover: #b32b2b;
+            --input-border: #555;
+            --input-focus: #009999;
+            --task-card-bg: #333333;
+            --task-card-shadow: rgba(0, 0, 0, 0.3);
+            --highlight-color: #009999;
+            --work-color: #ff5252;
+            --personal-color: #00d2d3;
+            --study-color: #10ac84;
+        }
+
         body {
             font-family: 'Tahoma', Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f5f5f5;
+            background-color: var(--bg-color);
+            color: var(--text-color);
             display: flex;
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
+            transition: background-color 0.3s, color 0.3s;
         }
         header {
-            background-color: #007b7b;
-            color: white;
+            background-color: var(--header-bg);
+            color: var(--header-text);
             width: 100%;
             padding: 20px;
             text-align: center;
             font-size: 24px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s, color 0.3s;
         }
         .container {
             width: 90%;
             max-width: 600px;
             margin: 20px;
-            background: white;
+            background: var(--container-bg);
             padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 10px var(--task-card-shadow);
+            transition: background-color 0.3s;
         }
         .criteria-section {
-            background-color: #f8f9fa;
+            background-color: var(--criteria-bg);
             padding: 15px;
             border-radius: 8px;
             margin-bottom: 20px;
-            border: 1px solid #eee;
+            border: 1px solid var(--container-border);
+            transition: background-color 0.3s, border-color 0.3s;
         }
         .criteria-section h3 {
             margin-top: 0;
-            color: #007b7b;
+            color: var(--highlight-color);
+            transition: color 0.3s;
         }
         .criteria-item {
             display: flex;
@@ -54,22 +108,35 @@
         }
         .add-task {
             display: flex;
+            flex-wrap: wrap;
             gap: 10px;
             margin-bottom: 20px;
         }
-        .add-task input {
-            flex: 1;
+        .add-task input, .add-task select {
             padding: 10px;
-            border: 1px solid #ddd;
+            border: 1px solid var(--input-border);
             border-radius: 4px;
             font-family: inherit;
+            background-color: var(--container-bg);
+            color: var(--text-color);
+            transition: border-color 0.3s, background-color 0.3s, color 0.3s;
         }
-        .add-task input:focus {
+        .add-task input:focus, .add-task select:focus {
             outline: none;
-            border-color: #007b7b;
+            border-color: var(--input-focus);
+        }
+        .task-input {
+            flex: 1;
+            min-width: 200px;
+        }
+        .category-select {
+            width: 120px;
+        }
+        .date-input {
+            width: 150px;
         }
         button {
-            background-color: #007b7b;
+            background-color: var(--button-bg);
             color: white;
             border: none;
             padding: 10px 15px;
@@ -79,11 +146,47 @@
             transition: background-color 0.3s;
         }
         button:hover {
-            background-color: #005f5f;
+            background-color: var(--button-hover);
         }
-        .translate-button {
+        .buttons-container {
+            display: flex;
+            gap: 10px;
             margin-bottom: 20px;
-            width: 100%;
+        }
+        .buttons-container button {
+            flex: 1;
+        }
+        .search-section {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .search-input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid var(--input-border);
+            border-radius: 4px;
+            font-family: inherit;
+            background-color: var(--container-bg);
+            color: var(--text-color);
+            transition: border-color 0.3s, background-color 0.3s, color 0.3s;
+        }
+        .search-input:focus {
+            outline: none;
+            border-color: var(--input-focus);
+        }
+        .search-button {
+            background-color: var(--button-bg);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: background-color 0.3s;
+        }
+        .search-button:hover {
+            background-color: var(--button-hover);
         }
         .task-list {
             list-style: none;
@@ -91,39 +194,113 @@
             margin: 0;
         }
         .task-card {
-            background: white;
+            background: var(--task-card-bg);
             padding: 15px;
             margin-bottom: 10px;
             border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 4px var(--task-card-shadow);
             display: flex;
             justify-content: space-between;
             align-items: center;
             animation: fadeIn 0.3s ease-out;
+            transition: background-color 0.3s, box-shadow 0.3s;
+            position: relative;
         }
-        .task-card span {
+        .task-card::before {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 0;
+            height: 100%;
+            width: 5px;
+            border-radius: 8px 0 0 8px;
+        }
+        .work::before {
+            background-color: var(--work-color);
+        }
+        .personal::before {
+            background-color: var(--personal-color);
+        }
+        .study::before {
+            background-color: var(--study-color);
+        }
+        .task-info {
+            flex: 1;
+        }
+        .task-text {
             font-weight: bold;
-            color: #007b7b;
+            margin-bottom: 5px;
+        }
+        .task-meta {
+            display: flex;
+            gap: 15px;
+            font-size: 14px;
+            color: var(--text-color);
+            opacity: 0.8;
+        }
+        .task-category {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
             margin-left: 5px;
         }
+        .work-category {
+            background-color: var(--work-color);
+            color: white;
+        }
+        .personal-category {
+            background-color: var(--personal-color);
+            color: white;
+        }
+        .study-category {
+            background-color: var(--study-color);
+            color: white;
+        }
+        .task-actions {
+            display: flex;
+            gap: 5px;
+        }
+        .edit-btn {
+            background-color: var(--edit-btn);
+            padding: 5px 10px;
+            font-size: 14px;
+        }
+        .edit-btn:hover {
+            background-color: var(--edit-hover);
+        }
         .delete-btn {
-            background-color: #ff4c4c;
+            background-color: var(--delete-btn);
             padding: 5px 10px;
             font-size: 14px;
         }
         .delete-btn:hover {
-            background-color: #e43b3b;
+            background-color: var(--delete-hover);
         }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+        .theme-icon {
+            font-size: 18px;
+        }
+        .no-tasks {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-color);
+            opacity: 0.7;
         }
     </style>
 </head>
 <body>
     <header>فهرس المهام</header>
     <div class="container">
-        <button class="translate-button" onclick="toggleTranslation()">ترجمة</button>
+        <div class="buttons-container">
+            <button class="translate-button" onclick="toggleTranslation()">ترجمة</button>
+            <button id="theme-toggle" onclick="toggleTheme()">
+                <span class="theme-icon">🌓</span> مظهر
+            </button>
+        </div>
         
         <div class="criteria-section">
             <h3>معايير الفهرسة</h3>
@@ -135,26 +312,108 @@
                 <input type="radio" id="arabicSort" name="sortCriteria">
                 <label for="arabicSort">الترتيب الأبجدي العربي</label>
             </div>
+            <div class="criteria-item">
+                <input type="radio" id="highToLow" name="sortCriteria">
+                <label for="highToLow">من الأكبر إلى الأقل (للأرقام)</label>
+            </div>
+            <div class="criteria-item">
+                <input type="radio" id="lowToHigh" name="sortCriteria">
+                <label for="lowToHigh">من الأقل إلى الأكبر (للأرقام)</label>
+            </div>
+            <div class="criteria-item">
+                <input type="radio" id="dueDateSort" name="sortCriteria">
+                <label for="dueDateSort">حسب تاريخ الإنجاز</label>
+            </div>
         </div>
 
         <div class="add-task">
-            <input type="text" id="taskInput" placeholder="أدخل مهمة جديدة...">
+            <input type="text" id="taskInput" class="task-input" placeholder="أدخل مهمة جديدة...">
+            <select id="taskCategory" class="category-select">
+                <option value="work">عمل</option>
+                <option value="personal">شخصي</option>
+                <option value="study">دراسة</option>
+            </select>
+            <input type="date" id="taskDueDate" class="date-input">
             <button onclick="addTask()">إضافة مهمة</button>
         </div>
 
-        <ul id="taskList" class="task-list"></ul>
+        <div class="search-section">
+            <input type="text" id="searchInput" placeholder="ابحث عن مهام..." class="search-input">
+            <button onclick="searchTasks()" class="search-button">بحث</button>
+        </div>
+
+        <ul id="taskList" class="task-list">
+            <li class="no-tasks">لا توجد مهام مضافة بعد</li>
+        </ul>
     </div>
 
     <script>
         let tasks = [];
         let isTranslated = false;
+        let isDarkMode = false;
+        let editIndex = -1;
 
-        // تحميل المهام المحفوظة عند بدء التشغيل
-        function loadTasks() {
+        // تحميل المهام والمظهر المحفوظ عند بدء التشغيل
+        function loadSettings() {
             const savedTasks = localStorage.getItem('tasks');
             if (savedTasks) {
                 tasks = JSON.parse(savedTasks);
+                if (tasks.length > 0) {
+                    document.querySelector('.no-tasks').style.display = 'none';
+                }
+            }
+            
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                enableDarkMode();
+            }
+            
+            renderTasks();
+        }
+
+        // استخراج الأرقام من النص
+        function extractNumber(text) {
+            const matches = text.match(/\d+/);
+            return matches ? parseInt(matches[0]) : null;
+        }
+
+        // دالة البحث عن المهام
+        function searchTasks() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const taskItems = document.querySelectorAll('.task-card');
+            
+            if (!searchTerm) {
                 renderTasks();
+                return;
+            }
+            
+            let foundTasks = false;
+            
+            taskItems.forEach(task => {
+                const taskText = task.textContent.toLowerCase();
+                if (taskText.includes(searchTerm)) {
+                    task.style.display = 'flex';
+                    foundTasks = true;
+                } else {
+                    task.style.display = 'none';
+                }
+            });
+            
+            // عرض رسالة إذا لم يتم العثور على مهام
+            const noTasksMsg = document.querySelector('.no-tasks');
+            const noResultsMsg = document.getElementById('no-results');
+            
+            if (!foundTasks) {
+                if (!noResultsMsg) {
+                    const taskList = document.getElementById('taskList');
+                    const msg = document.createElement('li');
+                    msg.id = 'no-results';
+                    msg.className = 'no-tasks';
+                    msg.textContent = isTranslated ? 'No tasks found' : 'لا توجد مهام مطابقة';
+                    taskList.appendChild(msg);
+                }
+            } else if (noResultsMsg) {
+                noResultsMsg.remove();
             }
         }
 
@@ -163,98 +422,160 @@
             const taskList = document.getElementById('taskList');
             taskList.innerHTML = '';
 
+            if (tasks.length === 0) {
+                taskList.innerHTML = '<li class="no-tasks">' + 
+                    (isTranslated ? 'No tasks added yet' : 'لا توجد مهام مضافة بعد') + 
+                    '</li>';
+                return;
+            }
+
             let sortedTasks = [...tasks];
             
             // تطبيق معايير الفهرسة
             if (document.getElementById('arabicSort').checked) {
                 sortedTasks.sort((a, b) => a.text.localeCompare(b.text, 'ar'));
+            } 
+            else if (document.getElementById('highToLow').checked) {
+                sortedTasks.sort((a, b) => {
+                    const numA = extractNumber(a.text);
+                    const numB = extractNumber(b.text);
+                    
+                    if (numA !== null && numB !== null) {
+                        return numB - numA;
+                    }
+                    else if (numA !== null) {
+                        return -1;
+                    }
+                    else if (numB !== null) {
+                        return 1;
+                    }
+                    else {
+                        return a.text.localeCompare(b.text, 'ar');
+                    }
+                });
+            }
+            else if (document.getElementById('lowToHigh').checked) {
+                sortedTasks.sort((a, b) => {
+                    const numA = extractNumber(a.text);
+                    const numB = extractNumber(b.text);
+                    
+                    if (numA !== null && numB !== null) {
+                        return numA - numB;
+                    }
+                    else if (numA !== null) {
+                        return -1;
+                    }
+                    else if (numB !== null) {
+                        return 1;
+                    }
+                    else {
+                        return a.text.localeCompare(b.text, 'ar');
+                    }
+                });
+            }
+            else if (document.getElementById('dueDateSort').checked) {
+                sortedTasks.sort((a, b) => {
+                    if (!a.dueDate && !b.dueDate) return 0;
+                    if (!a.dueDate) return 1;
+                    if (!b.dueDate) return -1;
+                    return new Date(a.dueDate) - new Date(b.dueDate);
+                });
             }
 
             sortedTasks.forEach((task, index) => {
                 const taskCard = document.createElement('li');
-                taskCard.className = 'task-card';
+                taskCard.className = `task-card ${task.category}`;
+                
+                const dueDate = task.dueDate ? 
+                    new Date(task.dueDate).toLocaleDateString('ar-EG') : 
+                    (isTranslated ? 'No due date' : 'لا يوجد تاريخ');
+                
+                const categoryText = isTranslated ? 
+                    (task.category === 'work' ? 'Work' : 
+                     task.category === 'personal' ? 'Personal' : 'Study') :
+                    (task.category === 'work' ? 'عمل' : 
+                     task.category === 'personal' ? 'شخصي' : 'دراسة');
+                
+                const categoryClass = `${task.category}-category`;
+                
                 taskCard.innerHTML = `
-                    <div>
-                        <span>${task.text[0].toUpperCase()}:</span>
-                        ${task.text}
+                    <div class="task-info">
+                        <div class="task-text">
+                            <span>${task.text[0].toUpperCase()}:</span>
+                            ${task.text}
+                            <span class="task-category ${categoryClass}">${categoryText}</span>
+                        </div>
+                        <div class="task-meta">
+                            <div>${isTranslated ? 'Due:' : 'تاريخ:'} ${dueDate}</div>
+                            <div>${formatDate(task.date)}</div>
+                        </div>
                     </div>
-                    <button class="delete-btn" onclick="deleteTask(${index})">
-                        ${isTranslated ? 'Delete' : 'حذف'}
-                    </button>
+                    <div class="task-actions">
+                        <button class="edit-btn" onclick="editTask(${index})">
+                            ${isTranslated ? 'Edit' : 'تعديل'}
+                        </button>
+                        <button class="delete-btn" onclick="deleteTask(${index})">
+                            ${isTranslated ? 'Delete' : 'حذف'}
+                        </button>
+                    </div>
                 `;
                 taskList.appendChild(taskCard);
             });
         }
 
-        // إضافة مهمة جديدة
+        // تنسيق التاريخ
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('ar-EG', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        // إضافة/تعديل مهمة
         function addTask() {
             const taskInput = document.getElementById('taskInput');
             const taskText = taskInput.value.trim();
+            const taskCategory = document.getElementById('taskCategory').value;
+            const taskDueDate = document.getElementById('taskDueDate').value;
 
             if (!taskText) {
                 alert(isTranslated ? 'Please enter a task.' : 'من فضلك أدخل مهمة.');
                 return;
             }
 
-            tasks.push({
-                text: taskText,
-                date: new Date()
-            });
+            if (editIndex === -1) {
+                // إضافة مهمة جديدة
+                tasks.push({
+                    text: taskText,
+                    category: taskCategory,
+                    dueDate: taskDueDate,
+                    date: new Date()
+                });
+            } else {
+                // تعديل المهمة الحالية
+                tasks[editIndex] = {
+                    text: taskText,
+                    category: taskCategory,
+                    dueDate: taskDueDate,
+                    date: tasks[editIndex].date
+                };
+                editIndex = -1;
+                document.querySelector('.add-task button').textContent = 
+                    isTranslated ? 'Add Task' : 'إضافة مهمة';
+            }
 
             taskInput.value = '';
+            document.getElementById('taskCategory').value = 'work';
+            document.getElementById('taskDueDate').value = '';
             saveTasks();
             renderTasks();
+            document.querySelector('.no-tasks').style.display = 'none';
         }
 
-        // حذف مهمة
-        function deleteTask(index) {
-            if (confirm(isTranslated ? 'Are you sure?' : 'هل أنت متأكد؟')) {
-                tasks.splice(index, 1);
-                saveTasks();
-                renderTasks();
-            }
-        }
-
-        // حفظ المهام في localStorage
-        function saveTasks() {
-            localStorage.setItem('tasks', JSON.stringify(tasks));
-        }
-
-        // تبديل اللغة
-        function toggleTranslation() {
-            isTranslated = !isTranslated;
-            
-            const translations = {
-                'فهرس المهام': 'Task Index',
-                'أدخل مهمة جديدة...': 'Enter a new task...',
-                'إضافة مهمة': 'Add Task',
-                'ترجمة': 'Translate',
-                'معايير الفهرسة': 'Indexing Criteria',
-                'بدون ترتيب': 'No Sorting',
-                'الترتيب الأبجدي العربي': 'Arabic Alphabetical Order'
-            };
-
-            document.querySelector('header').textContent = isTranslated ? 'Task Index' : 'فهرس المهام';
-            document.getElementById('taskInput').placeholder = isTranslated ? 'Enter a new task...' : 'أدخل مهمة جديدة...';
-            document.querySelector('.add-task button').textContent = isTranslated ? 'Add Task' : 'إضافة مهمة';
-            document.querySelector('.translate-button').textContent = isTranslated ? 'Translate' : 'ترجمة';
-            document.querySelector('.criteria-section h3').textContent = isTranslated ? 'Indexing Criteria' : 'معايير الفهرسة';
-            document.querySelector('label[for="noSort"]').textContent = isTranslated ? 'No Sorting' : 'بدون ترتيب';
-            document.querySelector('label[for="arabicSort"]').textContent = isTranslated ? 'Arabic Alphabetical Order' : 'الترتيب الأبجدي العربي';
-            
-            // تحديث أزرار الحذف
-            document.querySelectorAll('.delete-btn').forEach(btn => {
-                btn.textContent = isTranslated ? 'Delete' : 'حذف';
-            });
-        }
-
-        // إضافة مستمعين لأزرار الفهرسة
-        document.querySelectorAll('input[name="sortCriteria"]').forEach(radio => {
-            radio.addEventListener('change', renderTasks);
-        });
-
-        // تحميل المهام عند بدء الصفحة
-        window.onload = loadTasks;
-    </script>
-</body>
-</html>
+        // تعديل مهمة
+        function editTask(index) {
+           

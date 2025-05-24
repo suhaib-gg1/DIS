@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <!-- إعدادات الصفحة والستايل -->
+    <style>
+        /* كل تنسيقات CSS هنا */
+    </style>
+</head>
+<body>
+    <!-- واجهة المستخدم -->
+    <header>فهرس المهام</header>
+    <div class="container">
+        <button class="translate-button">ترجمة</button>
+        
+        <!-- معايير الفهرسة -->
+        <div class="criteria-section">
+            <h3>معايير الفهرسة</h3>
+            <div class="criteria-item">
+                <input type="radio" id="arabicSort" name="sortCriteria" checked>
+                <label for="arabicSort">الترتيب الأبجدي العربي</label>
+            </div>
+        </div>
+
+        <!-- حقل إضافة المهام -->
+        <div class="add-task">
+            <input type="text" id="taskInput" placeholder="أدخل مهمة جديدة...">
+            <button onclick="addTask()">إضافة مهمة</button>
+        </div>
+
+        <!-- قائمة المهام -->
+        <ul id="taskList" class="task-list"></ul>
+    </div>
+
+    <!-- السكريبتات -->
+    <script>
+        // كل الدوال الجاهزة هنا (إضافة/حذف/ترتيب المهام + الترجمة)
+    </script>
+</body>
+</html>

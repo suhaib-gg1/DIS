@@ -578,4 +578,125 @@
 
         // تعديل مهمة
         function editTask(index) {
-           
+            const task = tasks[index];
+            document.getElementById('taskInput').value = task.text;
+            document.getElementById('taskCategory').value = task.category;
+            document.getElementById('taskDueDate').value = task.dueDate || '';
+            editIndex = index;
+            document.querySelector('.add-task button').textContent = 
+                isTranslated ? 'Update Task' : 'تحديث المهمة';
+            document.getElementById('taskInput').focus();
+        }
+
+        // حذف مهمة
+        function deleteTask(index) {
+            if (confirm(isTranslated ? 'Are you sure?' : 'هل أنت متأكد؟')) {
+                tasks.splice(index, 1);
+                saveTasks();
+                renderTasks();
+                if (tasks.length === 0) {
+                    document.querySelector('.no-tasks').style.display = 'block';
+                }
+            }
+        }
+
+        // حفظ المهام في localStorage
+        function saveTasks() {
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+        }
+
+        // تبديل اللغة
+        function toggleTranslation() {
+            isTranslated = !isTranslated;
+            
+            const translations = {
+                'فهرس المهام': 'Task Index',
+                'أدخل مهمة جديدة...': 'Enter a new task...',
+                'إضافة مهمة': 'Add Task',
+                'ترجمة': 'Translate',
+                'مظهر': 'Theme',
+                'معايير الفهرسة': 'Indexing Criteria',
+                'بدون ترتيب': 'No Sorting',
+                'الترتيب الأبجدي العربي': 'Arabic Alphabetical Order',
+                'من الأكبر إلى الأقل (للأرقام)': 'High to Low (Numbers)',
+                'من الأقل إلى الأكبر (للأرقام)': 'Low to High (Numbers)',
+                'حسب تاريخ الإنجاز': 'By Due Date',
+                'عمل': 'Work',
+                'شخصي': 'Personal',
+                'دراسة': 'Study',
+                'ابحث عن مهام...': 'Search tasks...',
+                'بحث': 'Search',
+                'لا توجد مهام مطابقة': 'No tasks found'
+            };
+
+            document.querySelector('header').textContent = isTranslated ? 'Task Index' : 'فهرس المهام';
+            document.getElementById('taskInput').placeholder = isTranslated ? 'Enter a new task...' : 'أدخل مهمة جديدة...';
+            document.querySelector('.add-task button').textContent = 
+                isTranslated ? (editIndex === -1 ? 'Add Task' : 'Update Task') : 
+                (editIndex === -1 ? 'إضافة مهمة' : 'تحديث المهمة');
+            document.querySelector('.translate-button').textContent = isTranslated ? 'Translate' : 'ترجمة';
+            document.getElementById('theme-toggle').innerHTML = isTranslated ? 
+                '<span class="theme-icon">🌓</span> Theme' : 
+                '<span class="theme-icon">🌓</span> مظهر';
+            document.querySelector('.criteria-section h3').textContent = isTranslated ? 'Indexing Criteria' : 'معايير الفهرسة';
+            document.querySelector('label[for="noSort"]').textContent = isTranslated ? 'No Sorting' : 'بدون ترتيب';
+            document.querySelector('label[for="arabicSort"]').textContent = isTranslated ? 'Arabic Alphabetical Order' : 'الترتيب الأبجدي العربي';
+            document.querySelector('label[for="highToLow"]').textContent = isTranslated ? 'High to Low (Numbers)' : 'من الأكبر إلى الأقل (للأرقام)';
+            document.querySelector('label[for="lowToHigh"]').textContent = isTranslated ? 'Low to High (Numbers)' : 'من الأقل إلى الأكبر (للأرقام)';
+            document.querySelector('label[for="dueDateSort"]').textContent = isTranslated ? 'By Due Date' : 'حسب تاريخ الإنجاز';
+            document.getElementById('searchInput').placeholder = isTranslated ? 'Search tasks...' : 'ابحث عن مهام...';
+            document.querySelector('.search-button').textContent = isTranslated ? 'Search' : 'بحث';
+            
+            // تحديث خيارات التصنيف
+            const categorySelect = document.getElementById('taskCategory');
+            categorySelect.innerHTML = `
+                <option value="work">${isTranslated ? 'Work' : 'عمل'}</option>
+                <option value="personal">${isTranslated ? 'Personal' : 'شخصي'}</option>
+                <option value="study">${isTranslated ? 'Study' : 'دراسة'}</option>
+            `;
+            
+            renderTasks();
+        }
+
+        // تفعيل الوضع الداكن
+        function enableDarkMode() {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            document.getElementById('theme-toggle').innerHTML = isTranslated ? 
+                '<span class="theme-icon">🌞</span> Theme' : 
+                '<span class="theme-icon">🌞</span> مظهر';
+            isDarkMode = true;
+            localStorage.setItem('theme', 'dark');
+        }
+
+        // تفعيل الوضع الفاتح
+        function enableLightMode() {
+            document.documentElement.removeAttribute('data-theme');
+            document.getElementById('theme-toggle').innerHTML = isTranslated ? 
+                '<span class="theme-icon">🌓</span> Theme' : 
+                '<span class="theme-icon">🌓</span> مظهر';
+            isDarkMode = false;
+            localStorage.setItem('theme', 'light');
+        }
+
+        // تبديل المظهر
+        function toggleTheme() {
+            if (isDarkMode) {
+                enableLightMode();
+            } else {
+                enableDarkMode();
+            }
+        }
+
+        // إضافة مستمعين لأزرار الفهرسة
+        document.querySelectorAll('input[name="sortCriteria"]').forEach(radio => {
+            radio.addEventListener('change', renderTasks);
+        });
+
+        // البحث أثناء الكتابة
+        document.getElementById('searchInput').addEventListener('input', searchTasks);
+
+        // تحميل الإعدادات عند بدء الصفحة
+        window.onload = loadSettings;
+    </script>
+</body>
+</html>

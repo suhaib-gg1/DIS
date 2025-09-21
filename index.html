@@ -1,743 +1,188 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>فهرس المهام</title>
-    <style>
-        :root {
-            --bg-color: #f5f5f5;
-            --text-color: #333333;
-            --header-bg: #007b7b;
-            --header-text: white;
-            --container-bg: white;
-            --container-border: #eee;
-            --criteria-bg: #f8f9fa;
-            --button-bg: #007b7b;
-            --button-hover: #005f5f;
-            --edit-btn: #ffc107;
-            --edit-hover: #e0a800;
-            --delete-btn: #ff4c4c;
-            --delete-hover: #e43b3b;
-            --input-border: #ddd;
-            --input-focus: #007b7b;
-            --task-card-bg: white;
-            --task-card-shadow: rgba(0, 0, 0, 0.1);
-            --highlight-color: #007b7b;
-            --work-color: #ff6b6b;
-            --personal-color: #48dbfb;
-            --study-color: #1dd1a1;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>سكيتال - تجربة التخمين</title>
+<style>
+/* الخطوط والخلفية */
+body {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #0d1b2a, #1b263b);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
 
-        [data-theme="dark"] {
-            --bg-color: #1a1a1a;
-            --text-color: #ffffff;
-            --header-bg: #004d4d;
-            --header-text: #f0f0f0;
-            --container-bg: #2d2d2d;
-            --container-border: #444;
-            --criteria-bg: #3a3a3a;
-            --button-bg: #006666;
-            --button-hover: #004d4d;
-            --edit-btn: #ffaa00;
-            --edit-hover: #e69500;
-            --delete-btn: #cc3a3a;
-            --delete-hover: #b32b2b;
-            --input-border: #555;
-            --input-focus: #009999;
-            --task-card-bg: #333333;
-            --task-card-shadow: rgba(0, 0, 0, 0.3);
-            --highlight-color: #009999;
-            --work-color: #ff5252;
-            --personal-color: #00d2d3;
-            --study-color: #10ac84;
-        }
+/* العنوان */
+h1 { 
+    margin-bottom: 25px; 
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+}
 
-        body {
-            font-family: 'Tahoma', Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            transition: background-color 0.3s, color 0.3s;
-        }
-        header {
-            background-color: var(--header-bg);
-            color: var(--header-text);
-            width: 100%;
-            padding: 20px;
-            text-align: center;
-            font-size: 24px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            transition: background-color 0.3s, color 0.3s;
-        }
-        .container {
-            width: 90%;
-            max-width: 600px;
-            margin: 20px;
-            background: var(--container-bg);
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px var(--task-card-shadow);
-            transition: background-color 0.3s;
-        }
-        .criteria-section {
-            background-color: var(--criteria-bg);
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            border: 1px solid var(--container-border);
-            transition: background-color 0.3s, border-color 0.3s;
-        }
-        .criteria-section h3 {
-            margin-top: 0;
-            color: var(--highlight-color);
-            transition: color 0.3s;
-        }
-        .criteria-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-        .criteria-item input {
-            margin-left: 10px;
-        }
-        .category-filter {
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid var(--container-border);
-        }
-        .category-filter h4 {
-            margin-bottom: 10px;
-            color: var(--highlight-color);
-        }
-        .category-options {
-            display: flex;
-            gap: 10px;
-        }
-        .category-option {
-            display: flex;
-            align-items: center;
-        }
-        .category-option input {
-            margin-left: 5px;
-        }
-        .add-task {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        .add-task input, .add-task select {
-            padding: 10px;
-            border: 1px solid var(--input-border);
-            border-radius: 4px;
-            font-family: inherit;
-            background-color: var(--container-bg);
-            color: var(--text-color);
-            transition: border-color 0.3s, background-color 0.3s, color 0.3s;
-        }
-        .add-task input:focus, .add-task select:focus {
-            outline: none;
-            border-color: var(--input-focus);
-        }
-        .task-input {
-            flex: 1;
-            min-width: 200px;
-        }
-        .category-select {
-            width: 120px;
-        }
-        .date-input {
-            width: 150px;
-        }
-        button {
-            background-color: var(--button-bg);
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-family: inherit;
-            transition: background-color 0.3s;
-        }
-        button:hover {
-            background-color: var(--button-hover);
-        }
-        .buttons-container {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        .buttons-container button {
-            flex: 1;
-        }
-        .search-section {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        .search-input {
-            flex: 1;
-            padding: 10px;
-            border: 1px solid var(--input-border);
-            border-radius: 4px;
-            font-family: inherit;
-            background-color: var(--container-bg);
-            color: var(--text-color);
-            transition: border-color 0.3s, background-color 0.3s, color 0.3s;
-        }
-        .search-input:focus {
-            outline: none;
-            border-color: var(--input-focus);
-        }
-        .search-button {
-            background-color: var(--button-bg);
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-family: inherit;
-            transition: background-color 0.3s;
-        }
-        .search-button:hover {
-            background-color: var(--button-hover);
-        }
-        .task-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        .task-card {
-            background: var(--task-card-bg);
-            padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px var(--task-card-shadow);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            animation: fadeIn 0.3s ease-out;
-            transition: background-color 0.3s, box-shadow 0.3s;
-            position: relative;
-        }
-        .task-card::before {
-            content: '';
-            position: absolute;
-            right: 0;
-            top: 0;
-            height: 100%;
-            width: 5px;
-            border-radius: 8px 0 0 8px;
-        }
-        .work::before {
-            background-color: var(--work-color);
-        }
-        .personal::before {
-            background-color: var(--personal-color);
-        }
-        .study::before {
-            background-color: var(--study-color);
-        }
-        .task-info {
-            flex: 1;
-        }
-        .task-text {
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-        .task-meta {
-            display: flex;
-            gap: 15px;
-            font-size: 14px;
-            color: var(--text-color);
-            opacity: 0.8;
-        }
-        .task-category {
-            display: inline-block;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 12px;
-            margin-left: 5px;
-        }
-        .work-category {
-            background-color: var(--work-color);
-            color: white;
-        }
-        .personal-category {
-            background-color: var(--personal-color);
-            color: white;
-        }
-        .study-category {
-            background-color: var(--study-color);
-            color: white;
-        }
-        .task-actions {
-            display: flex;
-            gap: 5px;
-        }
-        .edit-btn {
-            background-color: var(--edit-btn);
-            padding: 5px 10px;
-            font-size: 14px;
-        }
-        .edit-btn:hover {
-            background-color: var(--edit-hover);
-        }
-        .delete-btn {
-            background-color: var(--delete-btn);
-            padding: 5px 10px;
-            font-size: 14px;
-        }
-        .delete-btn:hover {
-            background-color: var(--delete-hover);
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .theme-icon {
-            font-size: 18px;
-        }
-        .no-tasks {
-            text-align: center;
-            padding: 20px;
-            color: var(--text-color);
-            opacity: 0.7;
-        }
-    </style>
+/* التبويبات */
+.tabs { 
+    display: flex; 
+    margin-bottom: 20px; 
+}
+.tab {
+    padding: 12px 25px;
+    background: rgba(255,255,255,0.15);
+    margin: 0 5px;
+    border-radius: 8px;
+    cursor: not-allowed;
+    opacity: 0.5;
+    transition: 0.3s;
+}
+.tab.active { 
+    background: #ff9800; 
+    opacity: 1; 
+    cursor: default; 
+    box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+}
+
+/* محتوى التبويب */
+.content {
+    background: rgba(255,255,255,0.05);
+    padding: 25px;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+/* المدخلات والأزرار */
+input {
+    width: 80%;
+    padding: 12px;
+    margin: 8px 0;
+    border-radius: 8px;
+    border: none;
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+    font-size: 16px;
+}
+input::placeholder { color: rgba(255,255,255,0.6); }
+
+button {
+    cursor: pointer;
+    background-color: #ff9800;
+    color: #fff;
+    font-weight: bold;
+    padding: 12px 20px;
+    margin: 10px 0;
+    border-radius: 8px;
+    border: none;
+    font-size: 16px;
+    transition: 0.2s;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+}
+button:hover { 
+    background-color: #e68900; 
+    transform: translateY(-2px);
+}
+
+/* الناتج */
+#guessOutput { 
+    margin-top: 15px; 
+    padding: 10px; 
+    background: rgba(255,255,255,0.1); 
+    border-radius:5px; 
+    word-break: break-word;
+}
+</style>
 </head>
 <body>
-    <header>فهرس المهام</header>
-    <div class="container">
-        <div class="buttons-container">
-            <button class="translate-button" onclick="toggleTranslation()">ترجمة</button>
-            <button id="theme-toggle" onclick="toggleTheme()">
-                <span class="theme-icon">🌓</span> مظهر
-            </button>
-        </div>
-        
-        <div class="criteria-section">
-            <h3>معايير الفهرسة</h3>
-            <div class="criteria-item">
-                <input type="radio" id="noSort" name="sortCriteria" checked>
-                <label for="noSort">بدون ترتيب</label>
-            </div>
-            <div class="criteria-item">
-                <input type="radio" id="arabicSort" name="sortCriteria">
-                <label for="arabicSort">الترتيب الأبجدي العربي</label>
-            </div>
-            <div class="criteria-item">
-                <input type="radio" id="highToLow" name="sortCriteria">
-                <label for="highToLow">من الأكبر إلى الأقل (للأرقام)</label>
-            </div>
-            <div class="criteria-item">
-                <input type="radio" id="lowToHigh" name="sortCriteria">
-                <label for="lowToHigh">من الأقل إلى الأكبر (للأرقام)</label>
-            </div>
-            <div class="criteria-item">
-                <input type="radio" id="dueDateSort" name="sortCriteria">
-                <label for="dueDateSort">حسب تاريخ الإنجاز</label>
-            </div>
-            
-            <!-- قسم تصفية التصنيف الجديد -->
-            <div class="category-filter">
-                <h4>تصفية حسب التصنيف</h4>
-                <div class="category-options">
-                    <div class="category-option">
-                        <input type="radio" id="allCategories" name="categoryFilter" value="all" checked>
-                        <label for="allCategories">الكل</label>
-                    </div>
-                    <div class="category-option">
-                        <input type="radio" id="workFilter" name="categoryFilter" value="work">
-                        <label for="workFilter">عمل</label>
-                    </div>
-                    <div class="category-option">
-                        <input type="radio" id="studyFilter" name="categoryFilter" value="study">
-                        <label for="studyFilter">دراسة</label>
-                    </div>
-                    <div class="category-option">
-                        <input type="radio" id="personalFilter" name="categoryFilter" value="personal">
-                        <label for="personalFilter">شخصي</label>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <div class="add-task">
-            <input type="text" id="taskInput" class="task-input" placeholder="أدخل مهمة جديدة...">
-            <select id="taskCategory" class="category-select">
-                <option value="work">عمل</option>
-                <option value="personal">شخصي</option>
-                <option value="study">دراسة</option>
-            </select>
-            <input type="date" id="taskDueDate" class="date-input">
-            <button onclick="addTask()">إضافة مهمة</button>
-        </div>
+<h1>تجربة سكيتال</h1>
 
-        <div class="search-section">
-            <input type="text" id="searchInput" placeholder="ابحث عن مهام..." class="search-input">
-            <button onclick="searchTasks()" class="search-button">بحث</button>
-        </div>
+<div class="tabs">
+    <div class="tab active" id="tab1">إدخال الرسالة</div>
+    <div class="tab" id="tab2">التخمين</div>
+</div>
 
-        <ul id="taskList" class="task-list">
-            <li class="no-tasks">لا توجد مهام مضافة بعد</li>
-        </ul>
-    </div>
+<!-- التبويب الأول: إدخال -->
+<div class="content" id="content1">
+    <p>أدخل الكلمة أو الجملة:</p>
+    <input type="text" id="message" placeholder="مثال: مرحبا">
+    <p>اختر قطر العصا (عدد الحروف لكل لفّة):</p>
+    <input type="number" id="stickLength" min="2" max="20">
+    <br>
+    <button onclick="encryptAndSwitch()">تشفير وانتقال للتخمين</button>
+</div>
 
-    <script>
-        let tasks = [];
-        let isTranslated = false;
-        let isDarkMode = false;
-        let editIndex = -1;
+<!-- التبويب الثاني: التخمين -->
+<div class="content" id="content2" style="display:none;">
+    <p>حاول تخمين طول العصا:</p>
+    <input type="number" id="guessLength" min="2" max="20">
+    <button onclick="guessMessage()">جرب التخمين</button>
+    <div id="guessOutput"></div>
+    <br>
+    <button onclick="resetAll()">إعادة ضبط</button>
+</div>
 
-        function loadSettings() {
-            const savedTasks = localStorage.getItem('tasks');
-            if (savedTasks) {
-                tasks = JSON.parse(savedTasks);
-                if (tasks.length > 0) {
-                    document.querySelector('.no-tasks').style.display = 'none';
-                }
-            }
-            
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme === 'dark') {
-                enableDarkMode();
-            }
-            
-            renderTasks();
+<script>
+let originalMessage = "";
+let stickLength = 5;
+let encrypted = "";
+
+function encryptAndSwitch() {
+    originalMessage = document.getElementById("message").value.replace(/\s+/g, "");
+    stickLength = parseInt(document.getElementById("stickLength").value);
+    if(!originalMessage){ alert("ادخل كلمة أو جملة!"); return; }
+
+    // تشفير الرسالة
+    encrypted = "";
+    for(let i = 0; i < stickLength; i++){
+        for(let j = i; j < originalMessage.length; j += stickLength){
+            encrypted += originalMessage[j];
         }
+    }
 
-        function extractNumber(text) {
-            const matches = text.match(/\d+/);
-            return matches ? parseInt(matches[0]) : null;
-        }
+    // الانتقال للتبويب الثاني
+    document.getElementById("content1").style.display = "none";
+    document.getElementById("content2").style.display = "block";
+    document.getElementById("tab1").classList.remove("active");
+    document.getElementById("tab2").classList.add("active");
+    document.getElementById("guessOutput").innerText = "";
+}
 
-        function searchTasks() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const taskItems = document.querySelectorAll('.task-card');
-            
-            if (!searchTerm) {
-                renderTasks();
-                return;
-            }
-            
-            let foundTasks = false;
-            
-            taskItems.forEach(task => {
-                const taskText = task.textContent.toLowerCase();
-                if (taskText.includes(searchTerm)) {
-                    task.style.display = 'flex';
-                    foundTasks = true;
-                } else {
-                    task.style.display = 'none';
-                }
-            });
-            
-            const noTasksMsg = document.querySelector('.no-tasks');
-            const noResultsMsg = document.getElementById('no-results');
-            
-            if (!foundTasks) {
-                if (!noResultsMsg) {
-                    const taskList = document.getElementById('taskList');
-                    const msg = document.createElement('li');
-                    msg.id = 'no-results';
-                    msg.className = 'no-tasks';
-                    msg.textContent = isTranslated ? 'No tasks found' : 'لا توجد مهام مطابقة';
-                    taskList.appendChild(msg);
-                }
-            } else if (noResultsMsg) {
-                noResultsMsg.remove();
+function guessMessage() {
+    const guess = parseInt(document.getElementById("guessLength").value);
+    if(guess === stickLength){
+        // تظهر الرسالة فقط عند التخمين الصحيح
+        let result = "";
+        const rows = Math.ceil(encrypted.length / guess);
+        for(let r = 0; r < rows; r++){
+            for(let c = r; c < encrypted.length; c += rows){
+                result += encrypted[c] ? encrypted[c] : "";
             }
         }
+        document.getElementById("guessOutput").innerHTML = "<b>نجحت! الرسالة:</b> " + result;
+    } else {
+        document.getElementById("guessOutput").innerHTML = "<b>تخمين خاطئ</b> " +'<b>😡</b>';
+    }
+}
 
-        function renderTasks() {
-            const taskList = document.getElementById('taskList');
-            taskList.innerHTML = '';
+function resetAll() {
+    encrypted = "";
+    originalMessage = "";
+    stickLength = 5;
+    document.getElementById("message").value = "";
+    document.getElementById("stickLength").value = 5;
+    document.getElementById("guessLength").value = 5;
+    document.getElementById("guessOutput").innerText = "";
 
-            if (tasks.length === 0) {
-                taskList.innerHTML = '<li class="no-tasks">' + 
-                    (isTranslated ? 'No tasks added yet' : 'لا توجد مهام مضافة بعد') + 
-                    '</li>';
-                return;
-            }
+    document.getElementById("content2").style.display = "none";
+    document.getElementById("content1").style.display = "block";
 
-            let filteredTasks = [...tasks];
-            
-            // تصفية حسب التصنيف المختار
-            const selectedCategory = document.querySelector('input[name="categoryFilter"]:checked').value;
-            if (selectedCategory !== 'all') {
-                filteredTasks = filteredTasks.filter(task => task.category === selectedCategory);
-            }
-            
-            let sortedTasks = [...filteredTasks];
-            
-            if (document.getElementById('arabicSort').checked) {
-                sortedTasks.sort((a, b) => a.text.localeCompare(b.text, 'ar'));
-            } 
-            else if (document.getElementById('highToLow').checked) {
-                sortedTasks.sort((a, b) => {
-                    const numA = extractNumber(a.text);
-                    const numB = extractNumber(b.text);
-                    
-                    if (numA !== null && numB !== null) {
-                        return numB - numA;
-                    }
-                    else if (numA !== null) {
-                        return -1;
-                    }
-                    else if (numB !== null) {
-                        return 1;
-                    }
-                    else {
-                        return a.text.localeCompare(b.text, 'ar');
-                    }
-                });
-            }
-            else if (document.getElementById('lowToHigh').checked) {
-                sortedTasks.sort((a, b) => {
-                    const numA = extractNumber(a.text);
-                    const numB = extractNumber(b.text);
-                    
-                    if (numA !== null && numB !== null) {
-                        return numA - numB;
-                    }
-                    else if (numA !== null) {
-                        return -1;
-                    }
-                    else if (numB !== null) {
-                        return 1;
-                    }
-                    else {
-                        return a.text.localeCompare(b.text, 'ar');
-                    }
-                });
-            }
-            else if (document.getElementById('dueDateSort').checked) {
-                sortedTasks.sort((a, b) => {
-                    if (!a.dueDate && !b.dueDate) return 0;
-                    if (!a.dueDate) return 1;
-                    if (!b.dueDate) return -1;
-                    return new Date(a.dueDate) - new Date(b.dueDate);
-                });
-            }
+    document.getElementById("tab2").classList.remove("active");
+    document.getElementById("tab1").classList.add("active");
+}
+</script>
 
-            sortedTasks.forEach((task, index) => {
-                const taskCard = document.createElement('li');
-                taskCard.className = `task-card ${task.category}`;
-                
-                const dueDate = task.dueDate ? 
-                    new Date(task.dueDate).toLocaleDateString('ar-EG') : 
-                    (isTranslated ? 'No due date' : 'لا يوجد تاريخ');
-                
-                const categoryText = isTranslated ? 
-                    (task.category === 'work' ? 'Work' : 
-                     task.category === 'personal' ? 'Personal' : 'Study') :
-                    (task.category === 'work' ? 'عمل' : 
-                     task.category === 'personal' ? 'شخصي' : 'دراسة');
-                
-                const categoryClass = `${task.category}-category`;
-                
-                taskCard.innerHTML = `
-                    <div class="task-info">
-                        <div class="task-text">
-                            <span>${task.text[0].toUpperCase()}:</span>
-                            ${task.text}
-                            <span class="task-category ${categoryClass}">${categoryText}</span>
-                        </div>
-                        <div class="task-meta">
-                            <div>${isTranslated ? 'Due:' : 'تاريخ:'} ${dueDate}</div>
-                            <div>${formatDate(task.date)}</div>
-                        </div>
-                    </div>
-                    <div class="task-actions">
-                        <button class="edit-btn" onclick="editTask(${index})">
-                            ${isTranslated ? 'Edit' : 'تعديل'}
-                        </button>
-                        <button class="delete-btn" onclick="deleteTask(${index})">
-                            ${isTranslated ? 'Delete' : 'حذف'}
-                        </button>
-                    </div>
-                `;
-                taskList.appendChild(taskCard);
-            });
-        }
-
-        function formatDate(dateString) {
-            const date = new Date(dateString);
-            return date.toLocaleDateString('ar-EG', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-        }
-
-        function addTask() {
-            const taskInput = document.getElementById('taskInput');
-            const taskText = taskInput.value.trim();
-            const taskCategory = document.getElementById('taskCategory').value;
-            const taskDueDate = document.getElementById('taskDueDate').value;
-
-            if (!taskText) {
-                alert(isTranslated ? 'Please enter a task.' : 'من فضلك أدخل مهمة.');
-                return;
-            }
-
-            if (editIndex === -1) {
-                tasks.push({
-                    text: taskText,
-                    category: taskCategory,
-                    dueDate: taskDueDate,
-                    date: new Date()
-                });
-            } else {
-                tasks[editIndex] = {
-                    text: taskText,
-                    category: taskCategory,
-                    dueDate: taskDueDate,
-                    date: tasks[editIndex].date
-                };
-                editIndex = -1;
-                document.querySelector('.add-task button').textContent = 
-                    isTranslated ? 'Add Task' : 'إضافة مهمة';
-            }
-
-            taskInput.value = '';
-            document.getElementById('taskCategory').value = 'work';
-            document.getElementById('taskDueDate').value = '';
-            saveTasks();
-            renderTasks();
-            document.querySelector('.no-tasks').style.display = 'none';
-        }
-
-        function editTask(index) {
-            const task = tasks[index];
-            document.getElementById('taskInput').value = task.text;
-            document.getElementById('taskCategory').value = task.category;
-            document.getElementById('taskDueDate').value = task.dueDate || '';
-            editIndex = index;
-            document.querySelector('.add-task button').textContent = 
-                isTranslated ? 'Update Task' : 'تحديث المهمة';
-            document.getElementById('taskInput').focus();
-        }
-
-        function deleteTask(index) {
-            if (confirm(isTranslated ? 'Are you sure?' : 'هل أنت متأكد؟')) {
-                tasks.splice(index, 1);
-                saveTasks();
-                renderTasks();
-                if (tasks.length === 0) {
-                    document.querySelector('.no-tasks').style.display = 'block';
-                }
-            }
-        }
-
-        function saveTasks() {
-            localStorage.setItem('tasks', JSON.stringify(tasks));
-        }
-
-        function toggleTranslation() {
-            isTranslated = !isTranslated;
-            
-            const translations = {
-                'فهرس المهام': 'Task Index',
-                'أدخل مهمة جديدة...': 'Enter a new task...',
-                'إضافة مهمة': 'Add Task',
-                'ترجمة': 'Translate',
-                'مظهر': 'Theme',
-                'معايير الفهرسة': 'Indexing Criteria',
-                'بدون ترتيب': 'No Sorting',
-                'الترتيب الأبجدي العربي': 'Arabic Alphabetical Order',
-                'من الأكبر إلى الأقل (للأرقام)': 'High to Low (Numbers)',
-                'من الأقل إلى الأكبر (للأرقام)': 'Low to High (Numbers)',
-                'حسب تاريخ الإنجاز': 'By Due Date',
-                'عمل': 'Work',
-                'شخصي': 'Personal',
-                'دراسة': 'Study',
-                'ابحث عن مهام...': 'Search tasks...',
-                'بحث': 'Search',
-                'لا توجد مهام مطابقة': 'No tasks found'
-            };
-
-            document.querySelector('header').textContent = isTranslated ? 'Task Index' : 'فهرس المهام';
-            document.getElementById('taskInput').placeholder = isTranslated ? 'Enter a new task...' : 'أدخل مهمة جديدة...';
-            document.querySelector('.add-task button').textContent = 
-                isTranslated ? (editIndex === -1 ? 'Add Task' : 'Update Task') : 
-                (editIndex === -1 ? 'إضافة مهمة' : 'تحديث المهمة');
-            document.querySelector('.translate-button').textContent = isTranslated ? 'Translate' : 'ترجمة';
-            document.getElementById('theme-toggle').innerHTML = isTranslated ? 
-                '<span class="theme-icon">🌓</span> Theme' : 
-                '<span class="theme-icon">🌓</span> مظهر';
-            document.querySelector('.criteria-section h3').textContent = isTranslated ? 'Indexing Criteria' : 'معايير الفهرسة';
-            document.querySelector('label[for="noSort"]').textContent = isTranslated ? 'No Sorting' : 'بدون ترتيب';
-            document.querySelector('label[for="arabicSort"]').textContent = isTranslated ? 'Arabic Alphabetical Order' : 'الترتيب الأبجدي العربي';
-            document.querySelector('label[for="highToLow"]').textContent = isTranslated ? 'High to Low (Numbers)' : 'من الأكبر إلى الأقل (للأرقام)';
-            document.querySelector('label[for="lowToHigh"]').textContent = isTranslated ? 'Low to High (Numbers)' : 'من الأقل إلى الأكبر (للأرقام)';
-            document.querySelector('label[for="dueDateSort"]').textContent = isTranslated ? 'By Due Date' : 'حسب تاريخ الإنجاز';
-            document.getElementById('searchInput').placeholder = isTranslated ? 'Search tasks...' : 'ابحث عن مهام...';
-            document.querySelector('.search-button').textContent = isTranslated ? 'Search' : 'بحث';
-            
-            // تحديث خيارات التصنيف
-            const categorySelect = document.getElementById('taskCategory');
-            categorySelect.innerHTML = `
-                <option value="work">${isTranslated ? 'Work' : 'عمل'}</option>
-                <option value="personal">${isTranslated ? 'Personal' : 'شخصي'}</option>
-                <option value="study">${isTranslated ? 'Study' : 'دراسة'}</option>
-            `;
-            
-            // تحديث خيارات التصفية حسب التصنيف
-            document.querySelector('label[for="allCategories"]').textContent = isTranslated ? 'All' : 'الكل';
-            document.querySelector('label[for="workFilter"]').textContent = isTranslated ? 'Work' : 'عمل';
-            document.querySelector('label[for="studyFilter"]').textContent = isTranslated ? 'Study' : 'دراسة';
-            document.querySelector('label[for="personalFilter"]').textContent = isTranslated ? 'Personal' : 'شخصي';
-            
-            renderTasks();
-        }
-
-        function enableDarkMode() {
-            document.documentElement.setAttribute('data-theme', 'dark');
-            document.getElementById('theme-toggle').innerHTML = isTranslated ? 
-                '<span class="theme-icon">🌞</span> Theme' : 
-                '<span class="theme-icon">🌞</span> مظهر';
-            isDarkMode = true;
-            localStorage.setItem('theme', 'dark');
-        }
-
-        function enableLightMode() {
-            document.documentElement.removeAttribute('data-theme');
-            document.getElementById('theme-toggle').innerHTML = isTranslated ? 
-                '<span class="theme-icon">🌓</span> Theme' : 
-                '<span class="theme-icon">🌓</span> مظهر';
-            isDarkMode = false;
-            localStorage.setItem('theme', 'light');
-        }
-
-        function toggleTheme() {
-            if (isDarkMode) {
-                enableLightMode();
-            } else {
-                enableDarkMode();
-            }
-        }
-
-        document.querySelectorAll('input[name="sortCriteria"]').forEach(radio => {
-            radio.addEventListener('change', renderTasks);
-        });
-
-        document.querySelectorAll('input[name="categoryFilter"]').forEach(radio => {
-            radio.addEventListener('change', renderTasks);
-        });
-
-        document.getElementById('searchInput').addEventListener('input', searchTasks);
-
-        window.onload = loadSettings;
-    </script>
 </body>
 </html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Elite Sport | متجر النخبة الرياضي</title>
+    <link rel="icon" type="image/x-icon" href="logo1.ico" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="es-body">
+    <header class="es-header">
+      <div class="es-logo">
+        <img src="logo1.ico" alt="Elite Sport" class="es-logo-img"/>
+        <span class="es-logo-title">Elite Sport</span>
+      </div>
+      <nav class="es-nav">
+        <button class="es-nav-link es-nav-link--active" data-category="all">الكل</button>
+        <button class="es-nav-link" data-category="shoes">أحذية</button>
+        <button class="es-nav-link" data-category="sets">أطقم تدريب</button>
+        <button class="es-nav-link" data-category="accessories">إكسسوارات</button>
+      </nav>
+      <div class="es-header-right">
+        <img src="logo1.ico" alt="Elite Sport" class="es-nav-logo" />
+        <input type="text" id="searchInput" class="es-input" placeholder="بحث..." />
+        <button id="cartToggleBtn" class="es-icon-button">
+          <span class="es-cart-badge" id="cartCount">0</span>
+          <span class="es-icon es-icon-cart"></span>
+        </button>
+      </div>
+    </header>
+
+    <main class="es-main">
+      <section class="es-hero">
+        <h1 class="es-hero-title">ملابس رياضية عالية الأداء</h1>
+        <p class="es-hero-subtitle">السرعة، القوة، الاحتراف. اختَر تجهيزاتك من Elite Sport.</p>
+      </section>
+
+      <section class="es-section">
+        <h2 class="es-section-title">التشكيلة</h2>
+        <div id="productGrid" class="es-grid"></div>
+      </section>
+    </main>
+
+    <!-- تفاصيل المنتج -->
+    <div id="productModal" class="es-modal">
+      <div class="es-modal-backdrop" data-close-modal></div>
+      <div class="es-modal-dialog es-modal-dialog--product">
+        <button class="es-modal-close" data-close-modal>&times;</button>
+        <div class="es-modal-body">
+          <div class="es-modal-media">
+            <img id="modalProductImage" src="" alt="" class="es-modal-image" />
+          </div>
+          <div class="es-modal-content">
+            <h3 id="modalProductName" class="es-modal-title"></h3>
+            <p id="modalProductDescription" class="es-modal-description"></p>
+            <div class="es-modal-meta">
+              <span id="modalProductCategory" class="es-pill"></span>
+              <span id="modalProductPrice" class="es-price"></span>
+            </div>
+            <div class="es-modal-options">
+              <label class="es-field-label">المقاس</label>
+              <div id="modalSizeOptions" class="es-size-options"></div>
+            </div>
+            <button id="modalAddToCartBtn" class="es-button es-button--primary es-button--full">أضف إلى السلة</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- نافذة تم الدفع -->
+    <div id="paymentModal" class="es-modal">
+      <div class="es-modal-backdrop" data-close-payment-modal></div>
+      <div class="es-modal-dialog es-modal-dialog--message">
+        <div class="es-modal-body">
+          <p id="paymentModalMessage" class="es-payment-message"></p>
+          <button type="button" id="paymentModalOk" class="es-button es-button--primary">حسناً</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- السلة (للعرض فقط) -->
+    <aside id="cartDrawer" class="es-cart">
+      <div class="es-cart-header">
+        <h2 class="es-cart-title">سلة المشتريات</h2>
+        <button id="cartCloseBtn" class="es-icon-button">&times;</button>
+      </div>
+      <div id="cartItems" class="es-cart-items"></div>
+      <div class="es-cart-footer">
+        <div class="es-cart-summary">
+          <span>الإجمالي</span>
+          <span id="cartTotal" class="es-cart-total">0 ر.س</span>
+        </div>
+        <button type="button" id="cartPayBtn" class="es-button es-button--primary es-button--full">الدفع</button>
+      </div>
+    </aside>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

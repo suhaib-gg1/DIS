@@ -4,6 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>اختبارات أبوزيدان</title>
+  
+  <!-- أيقونة التبويب في المتصفح (Favicon) -->
+  <link rel="icon" type="image/png" href="logo.png">
+
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -20,8 +24,12 @@
   <!-- Header -->
   <header class="bg-indigo-900 dark:bg-slate-950 text-white shadow-lg sticky top-0 z-50 border-b dark:border-slate-800">
     <div class="max-w-6xl mx-auto px-4 py-3.5 flex flex-wrap justify-between items-center gap-3">
+      
+      <!-- شعار واسم المنصة -->
       <div class="flex items-center gap-3 cursor-pointer" id="logoHomeBtn">
-        <span class="p-2.5 bg-indigo-700/70 dark:bg-indigo-600/30 rounded-xl text-2xl shadow-inner">🎓</span>
+        <div class="w-12 h-12 rounded-xl bg-white/10 dark:bg-white/5 p-1 border border-white/20 flex items-center justify-center overflow-hidden shadow-inner">
+          <img src="logo.png" alt="شعار المنصة" class="w-full h-full object-contain rounded-lg">
+        </div>
         <div>
           <h1 class="text-xl md:text-2xl font-bold tracking-tight">منصة اختبارات أبوزيدان</h1>
           <p class="text-xs text-indigo-200 dark:text-slate-400">يتم جمع الاسئله من قروبات الواتس</p>
@@ -335,7 +343,7 @@
   </div>
 
   <footer class="bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 py-4 mt-8 text-center text-xs text-slate-500 dark:text-slate-400" style="font-size: large; font-weight: bold;">
-    يتم وضع ملفات الاسئله الواضحه(لا يعتمد على تصوير الكاميرا)<br>الملفات لا تغنيك عن المذاكره الفعليه<br>في حال وجود اي خطأ تواصل مع 0571170350 على الواتس
+    يتم وضع ملفات الاسئله الوضحه(لا يعتمد على تصوير الكاميرا)<br>الملفات لا تغنيك عن المذاكره الفعليه<br>في حال وجود اي خطأ تواصل مع 0571170350 على الواتس
   </footer>
 
   <script src="questions.js"></script>

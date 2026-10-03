@@ -1,4 +1,4 @@
-// app.js - المحرك البرمجي الشامل مع دعم الوضع الليلي
+// app.js - المحرك البرمجي مع التحديث اللحظي المباشر لسجل المقرر
 document.addEventListener("DOMContentLoaded", () => {
   // ==================== 0. إدارة الوضع الليلي (Dark Mode) ====================
   const themeToggleBtn = document.getElementById("themeToggleBtn");
@@ -16,7 +16,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // قراءة الحالة المحفوظة أو النظام الافتراضي
   const savedTheme = localStorage.getItem("theme");
   const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
   applyTheme(savedTheme === "dark" || (!savedTheme && prefersDark));
@@ -105,19 +104,36 @@ document.addEventListener("DOMContentLoaded", () => {
     return parsed;
   }
 
-  function saveCourseStats(courseId, newCorrect, newWrong, newWrongIds = []) {
-    const key = `exam_stats_${courseId}`;
-    const current = getCourseStats(courseId);
-    const mergedWrongIds = Array.from(new Set([...current.wrongQuestionIds, ...newWrongIds]));
+  // تحديث إحصائيات المقرر فور الإجابة على أي سؤال
+  function updateSingleQuestionInStats(courseId, qId, isCorrect, prevWasCorrect) {
+    const stats = getCourseStats(courseId);
+    let wrongIds = new Set(stats.wrongQuestionIds || []);
 
-    const updated = {
-      correct: current.correct + newCorrect,
-      wrong: current.wrong + newWrong,
-      total: current.total + (newCorrect + newWrong),
-      wrongQuestionIds: mergedWrongIds
-    };
-    localStorage.setItem(key, JSON.stringify(updated));
-    return updated;
+    if (prevWasCorrect === undefined) {
+      // إجابة جديدة لأول مرة
+      stats.total += 1;
+      if (isCorrect) {
+        stats.correct += 1;
+      } else {
+        stats.wrong += 1;
+        wrongIds.add(qId);
+      }
+    } else if (prevWasCorrect !== isCorrect) {
+      // قام الطالب بتغيير إجابته
+      if (isCorrect) {
+        stats.correct += 1;
+        stats.wrong = Math.max(0, stats.wrong - 1);
+        wrongIds.delete(qId);
+      } else {
+        stats.wrong += 1;
+        stats.correct = Math.max(0, stats.correct - 1);
+        wrongIds.add(qId);
+      }
+    }
+
+    stats.wrongQuestionIds = Array.from(wrongIds);
+    localStorage.setItem(`exam_stats_${courseId}`, JSON.stringify(stats));
+    updateSavedStatsDisplay();
   }
 
   function saveCoursePreferences(courseId) {
@@ -233,7 +249,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("savedTotalAnswers").innerText = stats.total;
     document.getElementById("savedCorrectAnswers").innerText = stats.correct;
     document.getElementById("savedWrongAnswers").innerText = stats.wrong;
-    document.getElementById("wrongQuestionsCount").innerText = stats.wrongQuestionIds.length;
+    document.getElementById("wrongQuestionsCount").innerText = stats.wrongQuestionIds ? stats.wrongQuestionIds.length : 0;
   }
 
   function showCoursesScreen() {
@@ -261,7 +277,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const stats = getCourseStats(activeCourseId);
 
     manualTotalInput.value = live ? Object.keys(live.userAnswers).length : stats.total;
-    manualWrongIdsInput.value = stats.wrongQuestionIds.join(", ");
+    manualWrongIdsInput.value = (stats.wrongQuestionIds || []).join(", ");
     manualStatsModal.classList.remove("hidden");
   };
 
@@ -329,7 +345,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const listContainer = document.getElementById("wrongQuestionsList");
     listContainer.innerHTML = "";
 
-    if (stats.wrongQuestionIds.length === 0) {
+    const wrongIds = stats.wrongQuestionIds || [];
+    if (wrongIds.length === 0) {
       listContainer.innerHTML = `
         <div class="text-center py-10 bg-slate-50 dark:bg-slate-700/40 rounded-xl border border-slate-200 dark:border-slate-700">
           <span class="text-3xl">🎉</span>
@@ -337,7 +354,7 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
       `;
     } else {
-      stats.wrongQuestionIds.forEach(qId => {
+      wrongIds.forEach(qId => {
         const qObj = course.questions.find(q => q.id === qId);
         if (!qObj) return;
 
@@ -601,7 +618,16 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function handleSelectOption(optIdx) {
+    const q = activeQuestions[currentIndex];
+    const prevAnswer = userAnswers[currentIndex];
+    const isCorrect = (optIdx === q.c);
+    const prevWasCorrect = (prevAnswer !== undefined) ? (prevAnswer === q.c) : undefined;
+
     userAnswers[currentIndex] = optIdx;
+
+    // تحديث الإحصائيات في LocalStorage لحظياً لكل سؤال
+    updateSingleQuestionInStats(activeCourseId, q.id, isCorrect, prevWasCorrect);
+
     saveCurrentLiveSession();
     updateLiveStats();
     renderQuestion();
@@ -670,23 +696,15 @@ document.addEventListener("DOMContentLoaded", () => {
     resultScreen.classList.remove("hidden");
 
     let sessionCorrect = 0;
-    let sessionWrong = 0;
-    const sessionWrongIds = [];
-
     activeQuestions.forEach((q, idx) => {
       const ans = userAnswers[idx];
-      if (ans !== undefined) {
-        if (ans === q.c) {
-          sessionCorrect++;
-        } else {
-          sessionWrong++;
-          sessionWrongIds.push(q.id);
-        }
+      if (ans !== undefined && ans === q.c) {
+        sessionCorrect++;
       }
     });
 
-    saveCourseStats(activeCourseId, sessionCorrect, sessionWrong, sessionWrongIds);
     clearLiveSession(activeCourseId);
+    updateSavedStatsDisplay();
 
     const total = activeQuestions.length;
     const percent = Math.round((sessionCorrect / total) * 100);
